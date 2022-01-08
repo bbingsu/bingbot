@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord.ext.commands import Bot
 
 bot: Bot = commands.Bot(command_prefix='!')
-TOKEN = 'OTI2NzQyMzUxMjM2NDU2NDc4.YdAGEg.9C4lXUXGF4_SRQ_TZ0AY94LHETs'
+TOKEN =
 
 
 @bot.event
