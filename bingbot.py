@@ -2,8 +2,12 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
 
+f = open("token.txt", 'r')
+_token = f.read().splitlines()
+f.close()
+TOKEN = _token[0]   # discord bot token
+
 bot: Bot = commands.Bot(command_prefix='!')
-TOKEN =
 
 
 @bot.event
