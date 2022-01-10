@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Bot, Context
 import random
+# utils.py
+from utils import getImagePath
 
 f = open("token.txt", 'r')
 _token = f.read().splitlines()
@@ -31,6 +33,17 @@ async def 안녕(ctx: Context):
 @bot.command()
 async def 바보(ctx: Context):
     await ctx.channel.send('니가 더')
+
+
+@bot.command()
+async def 이몸등장(ctx: Context):
+    try:
+        # discord.File을 통해 이미지를 가져온 후 디스코드에 전송함
+        # 다만, 이미지와 같은 파일을 보낼 때는 file을 사용해야 함
+        await ctx.channel.send(file=discord.File(getImagePath('bingsu_default.jpeg')))
+        await ctx.channel.send('먀옹')
+    except:
+        pass
 
 
 @bot.command()

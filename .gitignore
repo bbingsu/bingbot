@@ -2,3 +2,5 @@
 *.exe
 
 token.txt
+
+__pycache__
