@@ -52,6 +52,8 @@ async def 소개(ctx: Context):
                           description='이렇게 사용해요!')
     embed.add_field(name='대화', value='!안녕\r\n!바보')
     embed.add_field(name='게임', value='!홀짝')
+    embed.add_field(name='사진', value='!이몸등장\r\n\!랜덤')
+    embed.set_thumbnail(url='https://raw.githubusercontent.com/bbingsu/bingbot/main/image/merry.jpg')
     embed.set_footer(text='열심히 만드는 중임')
     await ctx.channel.send(embed=embed)
 
