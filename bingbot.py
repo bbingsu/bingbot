@@ -37,13 +37,11 @@ async def 바보(ctx: Context):
 
 @bot.command()
 async def 이몸등장(ctx: Context):
-    try:
-        # discord.File을 통해 이미지를 가져온 후 디스코드에 전송함
-        # 다만, 이미지와 같은 파일을 보낼 때는 file을 사용해야 함
-        await ctx.channel.send(file=discord.File(getImagePath('bingsu_default.jpeg')))
-        await ctx.channel.send('먀옹')
-    except:
-        pass
+    embed = discord.Embed(title='',
+                          description='')
+    embed.set_image(url='https://raw.githubusercontent.com/bbingsu/bingbot/main/image/bingsu_default.jpeg')
+    embed.set_footer(text='먀옹')
+    await ctx.channel.send(embed=embed)
 
 
 @bot.command()
