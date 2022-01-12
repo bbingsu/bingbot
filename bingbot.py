@@ -1,9 +1,11 @@
+import asyncio
 import discord
 from discord.ext import commands
 from discord.ext.commands import Bot, Context
 import random
 # utils.py
 from utils import getImagePath
+from youtube import ytSearch
 
 f = open("token.txt", 'r')
 _token = f.read().splitlines()
@@ -101,6 +103,21 @@ async def 홀짝(ctx: Context):
             print(dice)
         except: pass
 
+
+@bot.command()
+async def 검색(ctx: Context, searchString: str):
+    # - 유튜브 api로 검색한 데이터 가져옴
+    ytList = ytSearch(searchString)
+
+    # - 가져온 데이터를 활용해 embed로 표시함
+    def ytDictToEmbed(ytDict):
+        embed = discord.Embed(title=ytDict['title'], description=ytDict['description'], url=f"https://www.youtube.com/watch?v={ytDict['videoId']}")
+        embed.set_thumbnail(url=ytDict['thumbnail'])
+        return ctx.channel.send(embed=embed)       
+
+    # - 동시에 실행...이긴 한데?
+    # 제대로 안되는 걸 보니 먼가먼가 잘못됨
+    await asyncio.gather(*[ytDictToEmbed(ytDict) for ytDict in ytList])
 
 
 bot.run(TOKEN)
