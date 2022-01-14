@@ -180,9 +180,13 @@ async def 멈춰(ctx: Context):
     voiceClient = ctx.voice_client
     if voiceClient != None:
         if voiceClient.is_playing():
-            await voiceClient.stop()
+            try:
+                await voiceClient.stop()
+            except Exception as e:
+                pass
+            await ctx.channel.send("재생을 중지하였다냥")
         else:
-            await ctx.channel.send('이미 정지 되었다냥')
+            await ctx.channel.send('이미 중지 되었다냥')
     else:
         await ctx.channel.send('아직 들어가지도 않았다냥')
 
