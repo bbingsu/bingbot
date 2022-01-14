@@ -105,6 +105,7 @@ async def 홀짝(ctx: Context):
     # print('최고 연승 횟수:', max_winning)
     await ctx.channel.send(ctx.author.name + '님, 최고 ' + str(max_winning) + '연승 달성!')
 
+
 @bot.command()
 async def 검색(ctx: Context, searchString: str):
     # - 유튜브 api로 검색한 데이터 가져옴
@@ -151,27 +152,38 @@ async def 퇴장(ctx: Context):
 
 
 @bot.command()
-async def 플레이(ctx: Context, toPlay):
-    # - 유튜브 오디오 링크
-    audioUrl = getYoutubeAudioUrl(toPlay)
+async def 틀어(ctx: Context, toPlay):
     # - 봇이 입장한 보이스 채널
     voiceClient = ctx.voice_client
 
     # - 봇이 보이스 채널에 있는지 확인한 다음 음원을 재생함
     if voiceClient != None:
         try:
+            # - 유튜브 오디오 링크
+            audioUrl = getYoutubeAudioUrl(toPlay)
             # - 음원을 재생 가능한 형태로
             voiceSource = discord.FFmpegPCMAudio(source=audioUrl, executable="ffmpeg")
             # - 음원 재생
             voiceClient.play(voiceSource)
             # - 재생 안내
             toPlay_title = getYoutubeTitle(toPlay)
-            await ctx.channel.send(f"지금은 {toPlay_title} 를 재생하고 있다냥")
+            await ctx.channel.send(f"지금은 '{toPlay_title}' 를 재생하고 있다냥")
         except:
-            await ctx.channel.send(f"{toPlay_title} 는 재생할 수 없다냥")
+            toPlay_title = getYoutubeTitle(toPlay)
+            await ctx.channel.send(f" '{toPlay_title}' 는 재생할 수 없다냥")
     # - 봇이 보이스채널에 들어가 있지 않을 때
     else:
         await ctx.channel.send("나보다 약한 녀석의 말은 듣지 않는다옹")
 
+@bot.command()
+async def 멈춰(ctx: Context):
+    voiceClient = ctx.voice_client
+    if voiceClient != None:
+        if voiceClient.is_playing():
+            await voiceClient.stop()
+        else:
+            await ctx.channel.send('이미 정지 되었다냥')
+    else:
+        await ctx.channel.send('아직 들어가지도 않았다냥')
 
 bot.run(TOKEN)
