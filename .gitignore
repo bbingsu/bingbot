@@ -4,4 +4,7 @@
 token.txt
 secrets.json
 
+venv
+
+
 __pycache__
