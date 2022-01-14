@@ -100,9 +100,9 @@ async def 홀짝(ctx: Context):
             max_winning = max(max_winning, winning)
     except Exception as e:
         await msg.clear_reactions()
-    print('[알림][홀짝 게임 종료]')
-    print('종료 유저 이름:', ctx.author)
-    print('최고 연승 횟수:', max_winning)
+    # print('[알림][홀짝 게임 종료]')
+    # print('종료 유저 이름:', ctx.author)
+    # print('최고 연승 횟수:', max_winning)
     await ctx.channel.send(ctx.author.__str__().split('#')[0] + '님, 최고 ' + str(max_winning) + '연승 달성!')
 
 @bot.command()

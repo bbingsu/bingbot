@@ -78,4 +78,43 @@ def getYoutubeAudioUrl(url: str):
     except:
         print("유튜브 오디오 링크를 얻는 중 오류가 발생했습니다.")
 
+def isYoutubeVideoUrl(url: str):
+    '''
+    유튜브 영상 url인지 확인함.
+    '''
+    return 'youtube' in url or 'youtu.be' in url
+
+def getYoutubeVideoId(url: str):
+    '''
+    유튜브 영상 url을 받아 그 것의 video id를 리턴함.
+    '''
+    ydlOptions = {
+        'format': 'bestaudio/best',
+        'noplaylist': True,
+        'nocheckcertificate': True,
+        'ignoreerrors': False,
+        'quiet': True,
+        'no_warnings': True,
+        'default_search': 'auto',
+    }
     
+    try:
+        with youtube_dl.YoutubeDL(ydlOptions) as ydl:
+            info = ydl.extract_info(url, download=False)
+            return info['id']
+    except:
+        print("유튜브 오디오 ID를 얻는 중 오류가 발생했습니다.")
+
+def getYoutubeTitle(videioID: str):
+    if isYoutubeVideoUrl(videioID):
+        videioID = getYoutubeVideoId(videioID)
+
+    params = {"format": "json", "url": "https://www.youtube.com/watch?v=%s" % videioID}
+    url = "https://www.youtube.com/oembed"
+    query_string = urlencode(params)
+    url = url + "?" + query_string
+
+    with urlopen(url) as response:
+        response_text = response.read()
+        data = json.loads(response_text.decode())
+        return data['title']
