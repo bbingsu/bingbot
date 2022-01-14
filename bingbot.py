@@ -3,8 +3,7 @@ import discord
 from discord.ext.commands import Bot, Context
 import random
 from constants import *
-from utils import getImagePath
-from youtube import ytSearch
+from youtube import ytSearch, getYoutubeAudioUrl
 
 f = open("token.txt", 'r')
 _token = f.read().splitlines()
@@ -120,6 +119,58 @@ async def 검색(ctx: Context, searchString: str):
     # - 동시에 실행...이긴 한데?
     # 제대로 안되는 걸 보니 먼가먼가 잘못됨
     await asyncio.gather(*[ytDictToEmbed(ytDict) for ytDict in ytList])
+
+
+@bot.command()
+async def 입장(ctx: Context):
+    """
+    음성 채팅에 봇을 참여시킴
+    """
+
+    author = ctx.message.author
+
+    # - voice 채널 접근
+    if not author.voice:
+        await ctx.channel.send(f"{author.name} 집사는 보이스 채널이나 들어가고 오라냥") 
+    else:
+        await author.voice.channel.connect()
+        await ctx.channel.send("연결됐다냥")
+
+
+@bot.command()
+async def 퇴장(ctx: Context):
+    author = ctx.message.author
+    voiceClient = ctx.voice_client
+
+    # - 봇이 보이스 채널에 연결되어 있는지 확인 후 연결 해제
+    if voiceClient != None:
+        if voiceClient.is_connected():
+            await voiceClient.disconnect()
+    else:
+        await ctx.channel.send("아직 들어가지도 않았다냥")
+
+
+@bot.command()
+async def 플레이(ctx: Context, toPlay):
+    # - 유튜브 오디오 링크
+    audioUrl = getYoutubeAudioUrl(toPlay)
+    # - 봇이 입장한 보이스 채널
+    voiceClient = ctx.voice_client
+
+    # - 봇이 보이스 채널에 있는지 확인한 다음 음원을 재생함
+    if voiceClient != None:
+        try:
+            # - 음원을 재생 가능한 형태로
+            voiceSource = discord.FFmpegPCMAudio(source=audioUrl, executable="ffmpeg")
+            # - 음원 재생
+            voiceClient.play(voiceSource)
+            # - 재생 안내
+            await ctx.channel.send(f"지금은 {toPlay}를 재생하고 있다냥")
+        except:
+            await ctx.channel.send(f"{toPlay}는 재생할 수 없다냥")
+    # - 봇이 보이스채널에 들어가 있지 않을 때
+    else:
+        await ctx.channel.send("나보다 약한 녀석의 말은 듣지 않는다옹")
 
 
 bot.run(TOKEN)

@@ -1,3 +1,4 @@
+import youtube_dl
 from urllib.parse import urlencode, urljoin
 from urllib.request import Request, urlopen
 import json
@@ -56,5 +57,25 @@ def ytSearch(searchString: str):
     return results 
 
 
+def getYoutubeAudioUrl(url: str):
+    '''
+    유튜브 영상 url를 받아 그 것의 audio url을 리턴함.
+    '''
+    ydlOptions = {
+        'format': 'bestaudio/best',
+        'noplaylist': True,
+        'nocheckcertificate': True,
+        'ignoreerrors': False,
+        'quiet': True,
+        'no_warnings': True,
+        'default_search': 'auto',
+    }
+    
+    try:
+        with youtube_dl.YoutubeDL(ydlOptions) as ydl:
+            info = ydl.extract_info(url, download=False)
+            return info['url']
+    except:
+        print("유튜브 오디오 링크를 얻는 중 오류가 발생했습니다.")
 
     
