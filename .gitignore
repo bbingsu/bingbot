@@ -2,5 +2,6 @@
 *.exe
 
 token.txt
+secrets.json
 
 __pycache__
