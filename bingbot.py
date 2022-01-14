@@ -1,5 +1,4 @@
 import discord
-from discord.ext import commands
 from discord.ext.commands import Bot, Context
 import random
 # utils.py
@@ -10,7 +9,7 @@ _token = f.read().splitlines()
 f.close()
 TOKEN = _token[0]   # discord bot token
 
-bot: Bot = commands.Bot(command_prefix='!')
+bot: Bot = Bot(command_prefix='!')
 
 
 @bot.event
@@ -71,13 +70,13 @@ async def 홀짝(ctx: Context):
     await msg.add_reaction('🌞')
     await msg.add_reaction('🌝')
 
-    def check(reaction, user):
-            return str(reaction) in ['🌞', '🌝'] and \
-            user == ctx.author and reaction.message.id == msg.id
-    
-    while True:
-        try:
-            reaction, user = await bot.wait_for('reaction_add', check=check)
+    def _check(reaction: discord.reaction.Reaction, user: discord.member.Member):
+        return str(reaction) in ['🌞', '🌝'] and \
+                user == ctx.author and \
+                reaction.message.id == msg.id
+    try:
+        while True:
+            reaction, user = await bot.wait_for('reaction_add', check=_check, timeout=10)
             await msg.clear_reactions()
             if  (str(reaction) == '🌞' and dice % 2 == 1) or \
                 (str(reaction) == '🌝' and dice % 2 == 0):
@@ -98,9 +97,11 @@ async def 홀짝(ctx: Context):
             await msg.add_reaction('🌞')
             await msg.add_reaction('🌝')
             dice = random.randint(1, 6)
-            print(dice)
-        except: pass
-
+            # print(dice)
+    except Exception as e:
+        print(ctx.author, '홀짝 종료')
+        print(winning, '연승')
+        await msg.clear_reactions()
 
 
 bot.run(TOKEN)
