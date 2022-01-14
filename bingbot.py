@@ -3,7 +3,7 @@ import discord
 from discord.ext.commands import Bot, Context
 import random
 from constants import *
-from youtube import ytSearch, getYoutubeAudioUrl
+from youtube import *
 
 f = open("token.txt", 'r')
 _token = f.read().splitlines()
@@ -103,7 +103,7 @@ async def 홀짝(ctx: Context):
     # print('[알림][홀짝 게임 종료]')
     # print('종료 유저 이름:', ctx.author)
     # print('최고 연승 횟수:', max_winning)
-    await ctx.channel.send(ctx.author.__str__().split('#')[0] + '님, 최고 ' + str(max_winning) + '연승 달성!')
+    await ctx.channel.send(ctx.author.name + '님, 최고 ' + str(max_winning) + '연승 달성!')
 
 @bot.command()
 async def 검색(ctx: Context, searchString: str):
@@ -165,9 +165,10 @@ async def 플레이(ctx: Context, toPlay):
             # - 음원 재생
             voiceClient.play(voiceSource)
             # - 재생 안내
-            await ctx.channel.send(f"지금은 {toPlay}를 재생하고 있다냥")
+            toPlay_title = getYoutubeTitle(toPlay)
+            await ctx.channel.send(f"지금은 {toPlay_title} 를 재생하고 있다냥")
         except:
-            await ctx.channel.send(f"{toPlay}는 재생할 수 없다냥")
+            await ctx.channel.send(f"{toPlay_title} 는 재생할 수 없다냥")
     # - 봇이 보이스채널에 들어가 있지 않을 때
     else:
         await ctx.channel.send("나보다 약한 녀석의 말은 듣지 않는다옹")

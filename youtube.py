@@ -19,7 +19,6 @@ basicQuery = {
     'key': _youtubeKey
 }
 
-
 def ytSearch(searchString: str):
     '''
     들어온 string으로 유튜브에서 검색한 데이터를 리턴함
@@ -106,6 +105,9 @@ def getYoutubeVideoId(url: str):
         print("유튜브 오디오 ID를 얻는 중 오류가 발생했습니다.")
 
 def getYoutubeTitle(videioID: str):
+    '''
+    유튜브 id 또는 url을 받아 그 것의 title을 리턴함.
+    '''
     if isYoutubeVideoUrl(videioID):
         videioID = getYoutubeVideoId(videioID)
 
