@@ -2,6 +2,7 @@ import youtube_dl
 from urllib.parse import urlencode, urljoin
 from urllib.request import Request, urlopen
 import json
+import asyncio
 
 API_URL = 'https://www.googleapis.com/youtube/v3/'
 
@@ -56,7 +57,7 @@ def ytSearch(searchString: str):
     return results 
 
 
-def getYoutubeAudioUrl(url: str):
+async def getYoutubeVideoInfo(url: str):
     '''
     유튜브 영상 url를 받아 그 것의 audio url을 리턴함.
     '''
@@ -72,8 +73,12 @@ def getYoutubeAudioUrl(url: str):
     
     try:
         with youtube_dl.YoutubeDL(ydlOptions) as ydl:
-            info = ydl.extract_info(url, download=False)
-            return info['url']
+            loop = asyncio.get_event_loop()
+            info = await loop.run_in_executor(None, lambda: ydl.extract_info(url, download=False))
+            return {
+                "audioUrl": info['url'],
+                "title": info['title']
+            }
     except:
         print("유튜브 오디오 링크를 얻는 중 오류가 발생했습니다.")
 

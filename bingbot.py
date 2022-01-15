@@ -160,18 +160,19 @@ async def 틀어(ctx: Context, toPlay):
     # - 봇이 보이스 채널에 있는지 확인한 다음 음원을 재생함
     if voiceClient != None:
         try:
-            # - 유튜브 오디오 링크
-            audioUrl = getYoutubeAudioUrl(toPlay)
+            # - 유튜브 링크의 정보들
+            videoInfo = await getYoutubeVideoInfo(toPlay)
+            audioUrl = videoInfo['audioUrl']
+            title = videoInfo['title']
+
             # - 음원을 재생 가능한 형태로
             voiceSource = discord.FFmpegPCMAudio(source=audioUrl, executable="ffmpeg")
             # - 음원 재생
             voiceClient.play(voiceSource)
             # - 재생 안내
-            toPlay_title = getYoutubeTitle(toPlay)
-            await ctx.channel.send(f"지금은 '{toPlay_title}' 를 재생하고 있다냥")
+            await ctx.channel.send(f"지금은 '{title}' 를 재생하고 있다냥")
         except:
-            toPlay_title = getYoutubeTitle(toPlay)
-            await ctx.channel.send(f" '{toPlay_title}' 는 재생할 수 없다냥")
+            await ctx.channel.send(f" '{title}' 는 재생할 수 없다냥")
     # - 봇이 보이스채널에 들어가 있지 않을 때
     else:
         await ctx.channel.send("나보다 약한 녀석의 말은 듣지 않는다옹")
