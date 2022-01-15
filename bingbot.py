@@ -1,4 +1,6 @@
 import asyncio
+from collections import deque
+from discordFunctions import addMusicQueue, listMusicQueue, playMusic
 import discord
 from discord.ext.commands import Bot, Context
 import random
@@ -153,29 +155,17 @@ async def 퇴장(ctx: Context):
 
 
 @bot.command()
-async def 틀어(ctx: Context, toPlay):
-    # - 봇이 입장한 보이스 채널
+async def 틀어(ctx: Context, url: str):
     voiceClient = ctx.voice_client
 
-    # - 봇이 보이스 채널에 있는지 확인한 다음 음원을 재생함
-    if voiceClient != None:
-        try:
-            # - 유튜브 링크의 정보들
-            videoInfo = await getYoutubeVideoInfo(toPlay)
-            audioUrl = videoInfo['audioUrl']
-            title = videoInfo['title']
+    # - 새로 뮤직 리스트에 등록함
+    addMusicQueue(url)
+    await ctx.channel.send('예약했다냥!')
 
-            # - 음원을 재생 가능한 형태로
-            voiceSource = discord.FFmpegPCMAudio(source=audioUrl, executable="ffmpeg")
-            # - 음원 재생
-            voiceClient.play(voiceSource)
-            # - 재생 안내
-            await ctx.channel.send(f"지금은 '{title}' 를 재생하고 있다냥")
-        except:
-            await ctx.channel.send(f" '{title}' 는 재생할 수 없다냥")
-    # - 봇이 보이스채널에 들어가 있지 않을 때
-    else:
-        await ctx.channel.send("나보다 약한 녀석의 말은 듣지 않는다옹")
+    # - 음원이 재생되지 않고 있다면 재생 시작
+    if(not voiceClient.is_playing()):
+        await playMusic(ctx)
+
 
 @bot.command()
 async def 멈춰(ctx: Context):
@@ -191,5 +181,13 @@ async def 멈춰(ctx: Context):
             await ctx.channel.send('이미 중지 되었다냥')
     else:
         await ctx.channel.send('아직 들어가지도 않았다냥')
+
+
+@bot.command()
+async def 예약목록(ctx: Context):
+    listMusics = listMusicQueue()
+    for element in listMusics:
+        await ctx.channel.send(element)
+
 
 bot.run(TOKEN)
