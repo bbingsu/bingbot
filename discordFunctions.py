@@ -55,19 +55,23 @@ async def deprecated_playMusic(ctx: Context):
     else:
         await ctx.channel.send("나보다 약한 녀석의 말은 듣지 않는다옹")
 
-async def playMusic(ctx: Context, videoUrl: str):
+async def playMusic(ctx: Context, voiceClient, videoUrl: str):
     '''
     들어온 링크를 재생함.
 
     기존 `playMusic()`은 이름과 달리 담당하는 기능이 많았음.
     기능을 줄여 인자로 들어오는 음원만 재생하게 만듬.
+
+    Args:
+        ctx: 디스코드 Context 
+        voiceClient (VoiceClient): 음원 재생에 사용
+        videoUrl: 재생할 음원의 url
     '''
 
     # - 음원이 재생 중일 때 앱의 흐름을 멈추는 역할을 함
     isPlayingEvent = asyncio.Event()
 
     # - 봇이 보이스 채널에 있는지 확인한 다음 음원을 재생함
-    voiceClient = ctx.voice_client
     if voiceClient != None:
         try:
             # - 재생에 필요한 정보들 가져오기
@@ -89,3 +93,10 @@ async def playMusic(ctx: Context, videoUrl: str):
     # - 봇이 보이스채널에 들어가 있지 않을 때
     else:
         await ctx.channel.send("나보다 약한 녀석의 말은 듣지 않는다옹")
+
+def getMembersChannelId(ctx: Context):
+    '''
+    컨텍스트를 받아 명령어를 입력한 유저가 속한 채널 아이디를 리턴함
+    '''
+
+    return ctx.author.guild.id

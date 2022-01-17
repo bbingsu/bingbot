@@ -1,8 +1,7 @@
 import asyncio
 from collections import deque
 
-from discord import player
-from discordFunctions import addMusicQueue, listMusicQueue, playMusic
+from discordFunctions import getMembersChannelId, playMusic
 import discord
 from discord.ext.commands import Bot, Context
 import random
@@ -16,7 +15,9 @@ TOKEN = _token[0]   # discord bot token
 
 bot: Bot = Bot(command_prefix='!')
 
-# - 채널별 음원 예약목록
+# - 채널별 보이스 클라이언트 및 음원 예약목록
+# 구조는 아래와 같음
+# { key: {'voice': VoiceClient, 'list': deque([...url])}}
 musicDict = dict()
 
 
@@ -136,20 +137,25 @@ async def 입장(ctx: Context):
     음성 채팅에 봇을 참여시킴
     """
 
+    # - 명령어를 실행한 유저
     author = ctx.message.author
+    # - 명령어를 실행한 유저가 속한 채널의 아이디
+    channelId = getMembersChannelId(ctx)
 
     # - voice 채널 접근
     if not author.voice:
         await ctx.channel.send(f"{author.name} 집사는 보이스 채널이나 들어가고 오라냥") 
     else:
-        await author.voice.channel.connect()
+        # - 반환된 보이스 프로토콜. 봇을 보이스 채널에서 disconnect할 때 사용됨
+        voiceProtocol = await author.voice.channel.connect()
+        musicDict[channelId] = {**musicDict, "voice": voiceProtocol}
         await ctx.channel.send("연결됐다냥")
 
 
 @bot.command()
 async def 퇴장(ctx: Context):
-    author = ctx.message.author
-    voiceClient = ctx.voice_client
+    channelId = getMembersChannelId(ctx)
+    voiceClient = musicDict[channelId]['voice']
 
     # - 봇이 보이스 채널에 연결되어 있는지 확인 후 연결 해제
     if voiceClient != None:
@@ -161,11 +167,11 @@ async def 퇴장(ctx: Context):
 
 @bot.command()
 async def 틀어(ctx: Context, url: str):
-    async def playMusics(musicDeque: deque):
+    async def playMusics(musicDict: dict):
         '''
         들어온 deque가 빌 때까지 음악을 재생함
 
-        모든 목록을 재생했다면 True를 리턴함.
+        모든 목록을 재생했다면 True를 리턴. 예외가 발생했을 시는 False 리턴.
 
         기존 `playMusic()`의 예약목록 음원 재생 기능을 계승함.
 
@@ -173,35 +179,41 @@ async def 틀어(ctx: Context, url: str):
         musicDeque가 외부에서 변경되면 그대로 변경된 값을 사용할 수 있다는 것!!
         '''
 
-        # - 예약목록에 음원이 없다면 재귀를 종료
-        if musicDeque:
-            # - 음원 재생, 재생이 끝날 때까지 기다림
-            await playMusic(ctx, musicDeque.popleft())
-            # - 예약목록 상태 출력
-            print("[playMusics > deque]", musicDeque)
-            # - 재귀, 재생할 예약목록을 인자로 받음
-            # javascript와는 달리 리턴 때도 await를 붙여줘야 함.
-            return await playMusics(musicDeque) 
-        # - 예약목록의 모든 음원의 재생을 끝낸다면 True를 리턴하며 함수를 빠져나감
-        else: 
-            return True 
+        # - 딕셔너리에서 필요한 것들을 추출
+        musicDeque = musicDict['list']
+        musicVoiceClient = musicDict['voice']
 
-    # - 봇이 연결된 보이스 채널
-    voiceClient = ctx.voice_client
+        # - 예약목록에 음원이 없다면 재귀를 종료
+        try:
+            if musicDeque:
+                # - 음원 재생, 재생이 끝날 때까지 기다림
+                await playMusic(ctx, musicVoiceClient, musicDeque.popleft())
+                # - 예약목록 상태 출력
+                print("[playMusics > deque]", musicDeque)
+                # - 재귀, 재생할 예약목록을 인자로 받음
+                # javascript와는 달리 리턴 때도 await를 붙여줘야 함.
+                return await playMusics(musicDict) 
+            # - 예약목록의 모든 음원의 재생을 끝낸다면 True를 리턴하며 함수를 빠져나감
+            else: 
+                return True 
+        except:
+            return False
+
     # - 명령어를 입력한 유저가 속한 채널의 id
-    guildId = ctx.author.guild.id 
+    channelId = getMembersChannelId(ctx)
 
     # - 해당 채널에 예약목록이 존재한다면 url을 추가, 그렇지 않다면 새로운 deque를 생성하며 url을 추가
-    if guildId in musicDict:
-        musicDict[guildId].append(url)
+    if channelId in musicDict and 'list' in musicDict[channelId]:
+        musicDict[channelId]['list'].append(url)
     else:
-        musicDict[guildId] = deque([url])
+        musicDict[channelId] = {**musicDict[channelId], 'list': deque([url])}
     await ctx.channel.send('예약했다냥!')
 
     # - 음원이 재생되지 않고 있다면 실행
-    if(not voiceClient.is_playing()):
+    # if(not voiceClient.is_playing()):
+    if(not musicDict[channelId]['voice'].is_playing()):
         # - 채널 아이디에 맞는 예약목록의 음원 재생 시작
-        playResult = await playMusics(musicDict[guildId])
+        playResult = await playMusics(musicDict[channelId])
         # - 예약목록의 재생이 끝났다면 안내 메세지 출력
         if playResult:
             await ctx.channel.send('예약목록에 있는 음악의 재생을 모두 완료했다냥!') 
@@ -209,13 +221,18 @@ async def 틀어(ctx: Context, url: str):
 
 @bot.command()
 async def 멈춰(ctx: Context):
-    voiceClient = ctx.voice_client
+    # - musicDict에서 해당 채널에 연결된 보이스 클라이언트를 가져옴
+    channelId = getMembersChannelId(ctx)
+    voiceClient = musicDict[channelId]['voice']
+
     if voiceClient != None:
         if voiceClient.is_playing():
             try:
                 await voiceClient.stop()
             except Exception as e:
                 pass
+            # - 해당 채널의 voiceClient를 비움
+            voiceClient = None
             await ctx.channel.send("재생을 중지하였다냥")
         else:
             await ctx.channel.send('이미 중지 되었다냥')
@@ -226,10 +243,10 @@ async def 멈춰(ctx: Context):
 @bot.command()
 async def 예약목록(ctx: Context):
     # - 명령어를 입력한 유저가 속한 채널의 아이디
-    guildId = ctx.author.guild.id
+    guildId = getMembersChannelId(ctx)
     # - 채널에 예약목록이 존재한다면 출력, 아님 예외 메세지 출력
-    if guildId in musicDict and musicDict[guildId]:
-        for element in musicDict[guildId]:
+    if guildId in musicDict and 'list' in musicDict[guildId]:
+        for element in musicDict[guildId]['list']:
             await ctx.channel.send(element)
     else:
         await ctx.channel.send("예약된 노래가 없다냥!")
