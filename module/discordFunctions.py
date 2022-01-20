@@ -2,7 +2,7 @@ import asyncio
 import discord
 from discord.ext.commands import Context
 from collections import deque
-from youtube import getYoutubeVideoInfo
+from module.youtube import getYoutubeVideoInfo
 
 #- 음악 리스트, deprecated
 musicQueue = deque()

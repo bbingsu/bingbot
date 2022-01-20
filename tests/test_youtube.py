@@ -1,5 +1,5 @@
 import pytest
-from ..youtube import *
+from ..module.youtube import *
 
 def test_getYoutubeVideoId():
     assert getYoutubeVideoId("https://www.youtube.com/watch?v=dQw4w9WgXcQ") == "dQw4w9WgXcQ"
