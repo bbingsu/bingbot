@@ -31,7 +31,7 @@ async def deprecated_playMusic(ctx: Context):
                 # while의 탈출 조건, 큐의 재생이 끝나면 ㄱㄱ
                 if not musicQueue:
                     await ctx.channel.send("리스트에 있는 음악을 전부 재생했다냥!")
-                    return;
+                    return
                 # - 재생에 필요한 정보들 가져오기
                 videoUrl = musicQueue.popleft() 
                 videoInfo = await getYoutubeVideoInfo(videoUrl)

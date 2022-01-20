@@ -1,6 +1,6 @@
 import discord
 from discord.ext.commands import Context
-from discord.ext import commands
+import discord.ext.commands as commands
 
 
 @commands.command()
@@ -30,3 +30,5 @@ async def 소개(ctx: Context):
     embed.set_thumbnail(url='https://raw.githubusercontent.com/bbingsu/bingbot/main/image/merry.jpg')
     embed.set_footer(text='열심히 만드는 중임')
     await ctx.channel.send(embed=embed)
+
+basicCmd = [ 안녕, 바보, 이몸등장, 소개 ]

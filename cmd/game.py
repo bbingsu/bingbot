@@ -1,14 +1,10 @@
 import discord
 from discord.ext.commands import Context
-from discord.ext import commands
+import discord.ext.commands as commands
 
 import random
 
-
-INIT = 0
-WIN = 1
-LOSE = 2
-
+INIT, WIN, LOSE = 0, 1, 2
 even_odd_msg = ['선택 한 뒤에 어떤 수가 나왔나 알려 드려요.', 
                     '정답입니다! 계속해서 도전해보세요!', 
                     '틀렸네요... 계속 도전해 보세요!']
@@ -61,3 +57,5 @@ async def 홀짝(ctx: Context):
     # print('종료 유저 이름:', ctx.author)
     # print('최고 연승 횟수:', max_winning)
     await ctx.channel.send(ctx.author.name + '님, 최고 ' + str(max_winning) + '연승 달성!')
+
+gameCmd = [ 홀짝 ]

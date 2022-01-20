@@ -1,6 +1,6 @@
 import discord
 from discord.ext.commands import Context
-from discord.ext import commands
+import discord.ext.commands as commands
 
 import asyncio
 from collections import deque
@@ -148,3 +148,5 @@ async def 예약목록(ctx: Context):
             await ctx.channel.send(element)
     else:
         await ctx.channel.send("예약된 노래가 없다냥!")
+
+musicCmd = [ 검색, 입장, 퇴장, 틀어, 멈춰, 예약목록 ]

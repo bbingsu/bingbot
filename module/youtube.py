@@ -82,13 +82,13 @@ async def getYoutubeVideoInfo(url: str):
     except:
         print("유튜브 오디오 링크를 얻는 중 오류가 발생했습니다.")
 
-def isYoutubeVideoUrl(url: str):
+def isYoutubeVideoUrl(url: str) -> bool:
     '''
     유튜브 영상 url인지 확인함.
     '''
     return 'youtube' in url or 'youtu.be' in url
 
-def getYoutubeVideoId(url: str):
+def getYoutubeVideoId(url: str) -> str:
     '''
     유튜브 영상 url을 받아 그 것의 video id를 리턴함.
     '''
@@ -109,7 +109,7 @@ def getYoutubeVideoId(url: str):
     except:
         print("유튜브 오디오 ID를 얻는 중 오류가 발생했습니다.")
 
-def getYoutubeTitle(videioID: str):
+def getYoutubeTitle(videioID: str) -> str:
     '''
     유튜브 id 또는 url을 받아 그 것의 title을 리턴함.
     '''
