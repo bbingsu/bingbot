@@ -5,16 +5,16 @@ import discord.ext.commands as commands
 import random
 
 INIT, WIN, LOSE = 0, 1, 2
-even_odd_msg = ['선택 한 뒤에 어떤 수가 나왔나 알려 드려요.', 
-                    '정답입니다! 계속해서 도전해보세요!', 
-                    '틀렸네요... 계속 도전해 보세요!']
+even_odd_msg = ['선택 한 뒤에 어떤 수가 나왔나 알려 준다냥.', 
+                    '정답이다냥! 계속해서 도전해보라냥!', 
+                    '틀렸다냥... 계속 도전해 보라냥!']
 
 @commands.command()
 async def 홀짝(ctx: Context):
     dice = random.randint(1, 6)
     winning, max_winning = 0, 0
     def _make_embed(description: str, before_dice: str):
-        embed = discord.Embed(title='홀, 짝중에 하나를 선택해 주세요.',
+        embed = discord.Embed(title='홀, 짝중에 하나를 선택해 보라냥.',
                                 description=description)
         embed.add_field(name='> 주사위의 눈', value=before_dice)
         embed.add_field(name='> 홀수', value='🌞')
@@ -56,6 +56,6 @@ async def 홀짝(ctx: Context):
     # print('[알림][홀짝 게임 종료]')
     # print('종료 유저 이름:', ctx.author)
     # print('최고 연승 횟수:', max_winning)
-    await ctx.channel.send(ctx.author.name + '님, 최고 ' + str(max_winning) + '연승 달성!')
+    await ctx.channel.send(ctx.author.name + '집사가 최고 ' + str(max_winning) + '연승 달성했다냥!')
 
 gameCmd = [ 홀짝 ]

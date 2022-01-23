@@ -31,7 +31,7 @@ async def on_message(msg: discord.Message):
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
-        await ctx.send('무슨 말씀인지 잘 모르겠어요! 이걸 물어봐 주시겠어요?\n`빙수 자기소개`')
+        await ctx.send('무슨 말인지 잘 모르겠다냥.. 이건 어떠냥?\n`빙수 자기소개`')
         return
     raise error
 

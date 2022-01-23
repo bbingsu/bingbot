@@ -23,14 +23,14 @@ async def 이몸등장(ctx: Context):
     embed.set_footer(text='먀옹')
     await ctx.channel.send(embed=embed)
 
-introduce = discord.Embed(title='저는 빙수에요',
-                          description="이렇게 사용해요!\n`빙수 안녕`, `@BINGSU 안녕`")
+introduce = discord.Embed(title='나는 빙수다냥',
+                          description="이렇게 사용한다냥!\n`빙수 안녕`, `@BINGSU 안녕`")
 introduce.add_field(name='대화', value='안녕\r\n바보\r\n기여')
 introduce.add_field(name='게임', value='홀짝')
 introduce.add_field(name='사진', value='이몸등장\r\n\랜덤')
 introduce.add_field(name='노래', value='입장\r\n\틀어\r\n\멈춰\r\n\퇴장')
 introduce.set_thumbnail(url='https://raw.githubusercontent.com/bbingsu/bingbot/main/image/merry.jpg')
-introduce.set_footer(text='명령어 아이디어 제공 환영합니다!')
+introduce.set_footer(text='명령어 아이디어 제공은 환영한다냥!')
 
 @commands.command()
 async def 소개(ctx: Context):
