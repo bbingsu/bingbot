@@ -4,6 +4,7 @@ from discord.ext.commands import Bot, when_mentioned_or, CommandNotFound
 from cmd.basic import basicCmd
 from cmd.game import gameCmd
 from cmd.music import musicCmd
+from cmd.etc import etcCmd
 
 DEBUG = True
 
@@ -36,7 +37,7 @@ async def on_command_error(ctx, error):
     raise error
 
 def main():
-    for _cmd in basicCmd+gameCmd+musicCmd:
+    for _cmd in basicCmd+gameCmd+musicCmd+etcCmd:
         bot.add_command(_cmd)
     bot.run(TOKEN)
 
