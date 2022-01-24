@@ -1,6 +1,8 @@
 import discord
 from discord.ext.commands import Bot, when_mentioned_or, CommandNotFound
 
+from module.translation import translate_google, get_sentiment
+
 from cmd.basic import basicCmd
 from cmd.game import gameCmd
 from cmd.music import musicCmd
@@ -30,9 +32,14 @@ async def on_message(msg: discord.Message):
     await bot.process_commands(msg)
 
 @bot.event
-async def on_command_error(ctx, error):
+async def on_command_error(ctx, error: CommandNotFound):
     if isinstance(error, CommandNotFound):
-        await ctx.send('무슨 말인지 잘 모르겠다냥.. 이건 어떠냥?\n`빙수 자기소개`')
+        input_text = ctx.message.content[len(ctx.prefix):]
+        sent_score = get_sentiment(translate_google(input_text, "ko", "en"))
+        if sent_score <= -0.3:
+            await ctx.channel.send("욕하지 말라냥...")
+        else:
+            await ctx.channel.send('무슨 말인지 잘 모르겠다냥.. 이건 어떠냥?\n`빙수 자기소개`')
         return
     raise error
 
