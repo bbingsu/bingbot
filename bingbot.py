@@ -37,7 +37,9 @@ async def on_command_error(ctx, error: CommandNotFound):
         input_text = ctx.message.content[len(ctx.prefix):]
         sent_score = get_sentiment(translate_google(input_text, "ko", "en"))
         if sent_score <= -0.3:
-            await ctx.channel.send("욕하지 말라냥...")
+            await ctx.channel.send("괴롭히지 말라냥...")
+        elif sent_score >= 0.4:
+            await ctx.channel.send("고맙다냥!")
         else:
             await ctx.channel.send('무슨 말인지 잘 모르겠다냥.. 이건 어떠냥?\n`빙수 자기소개`')
         return
