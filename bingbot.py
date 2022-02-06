@@ -1,12 +1,13 @@
 import discord
 from discord.ext.commands import Bot, when_mentioned_or, CommandNotFound
 
+from module.chatter import answer_by_chatbot, isChatterAvailable
 from module.translation import translate_google, get_sentiment
 
-from cmd.basic import basicCmd
-from cmd.game import gameCmd
-from cmd.music import musicCmd
-from cmd.etc import etcCmd
+from commands.basic import basicCmd
+from commands.game import gameCmd
+from commands.music import musicCmd
+from commands.etc import etcCmd
 
 DEBUG = True
 
@@ -32,16 +33,20 @@ async def on_message(msg: discord.Message):
     await bot.process_commands(msg)
 
 @bot.event
-async def on_command_error(ctx, error: CommandNotFound):
+async def on_command_error(ctx, error: Exception):
     if isinstance(error, CommandNotFound):
         input_text = ctx.message.content[len(ctx.prefix):]
-        sent_score = get_sentiment(translate_google(input_text, "ko", "en"))
-        if sent_score <= -0.3:
-            await ctx.channel.send("괴롭히지 말라냥...")
-        elif sent_score >= 0.4:
-            await ctx.channel.send("고맙다냥!")
+        if isChatterAvailable:
+            chatbot_response = answer_by_chatbot(input_text)
+            await ctx.send(chatbot_response)
         else:
-            await ctx.channel.send('무슨 말인지 잘 모르겠다냥.. 이건 어떠냥?\n`빙수 자기소개`')
+            sent_score = get_sentiment(translate_google(input_text, "ko", "en"))
+            if sent_score <= -0.3:
+                await ctx.channel.send("괴롭히지 말라냥...")
+            elif sent_score >= 0.4:
+                await ctx.channel.send("고맙다냥!")
+            else:
+                await ctx.channel.send('무슨 말인지 잘 모르겠다냥.. 이건 어떠냥?\n`빙수 자기소개`')
         return
     raise error
 
