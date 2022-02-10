@@ -30,7 +30,7 @@ introduce.add_field(name='게임', value='홀짝')
 introduce.add_field(name='사진', value='이몸등장\r\n\랜덤')
 introduce.add_field(name='노래', value='입장\r\n\틀어\r\n\멈춰\r\n\퇴장')
 introduce.add_field(name='기타', value='번역')
-introduce.set_thumbnail(url='https://raw.githubusercontent.com/bbingsu/bingbot/main/image/merry.jpg')
+introduce.set_thumbnail(url='http://snmhz325.asuscomm.com')
 introduce.set_footer(text='명령어 아이디어 제공은 환영한다냥!')
 
 @commands.command()
