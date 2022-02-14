@@ -1,6 +1,8 @@
 # 빙수봇
 
-> <img src="./image/bingsu_default.jpeg"  width="30%"> (빙수, 샴, 2019년생)
+> <img src="./image/20220214.jpg"  width="50%"> 
+>
+> (빙수, 샴, 2019년생)
 
 간단한 게임, 음악 재생, 자유주제 채팅 기능을 가진 디스코드 챗봇
 
