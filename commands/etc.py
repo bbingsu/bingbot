@@ -11,7 +11,7 @@ async def 번역(ctx: Context, *, text: str):
     """구글 번역 api를 이용해 한국어를 영어로 번역합니다."""
     await ctx.channel.send(translate_google(text, "ko", "en"))
 
-position = ["main :tank:", "sub :tank:", "main :dps:", "sub :dps:", "main :sup:", "sub :sup:"]
+position = ["main 🛡️", "sub 🛡️", "main ⚔️", "sub ⚔️", "main 💉", "sub 💉"]
 
 @commands.command()
 async def 랜덤포지션(ctx: Context, *, text:str):
